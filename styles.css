@@ -1,0 +1,94 @@
+:root {
+    --text: #f6bf53;
+    --background: #092a27;
+    --background_lines: #0d3633;
+    --primary: #78f2ea;
+    --secondary: #1f1f1f;
+    --accent: #f6bf53;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    font: 26px monospace;
+    cursor: default;
+}
+
+*:hover {
+    cursor: default;
+}
+
+body {
+    height: 100vh;
+    width: 100vw;
+    background: linear-gradient(
+            to bottom,
+            var(--background_lines),
+            var(--background) 30%
+    );
+    background-size: 100% 20px;
+    box-shadow: inset 0 0 1.5rem 1.5rem black;
+    overflow: hidden;
+    line-height: 24px;
+    display: flex;
+    align-content: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+#content {
+    margin: 1rem 0;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+p {
+    color: var(--text);
+    padding: 0 4rem;
+}
+
+.primary {
+    color: var(--primary);
+}
+
+list {
+    all: unset;
+}
+
+input {
+    all: unset;
+    color: var(--text);
+    caret-color: transparent;
+}
+
+label:first-child  {
+    color: var(--primary);
+    padding: 0 0 0 4rem;
+    animation: none;
+}
+
+label {
+    color: var(--text);
+    padding: 0;
+    animation: blinking 400ms ease-in-out infinite;
+}
+
+@keyframes blinking {
+    0% {opacity: 0.2}
+    50% {opacity: 1}
+    100% {opacity: 0.2}
+}
+
+h1 {
+    text-align: center;
+    animation: glowing 3s ease-in-out infinite;
+    color: var(--text);
+    margin: 0.5rem 0 0;
+}
+
+@keyframes glowing {
+    0% {opacity: 0.8}
+    50% {opacity: 1}
+    100% {opacity: 0.8}
+}
