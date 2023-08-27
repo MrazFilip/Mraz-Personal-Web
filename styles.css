@@ -1,16 +1,19 @@
 :root {
+    --font: 26px;
     --text: #f6bf53;
     --background: #092a27;
     --background_lines: #0d3633;
-    --primary: #78f2ea;
-    --secondary: #1f1f1f;
-    --accent: #f6bf53;
+    --primary: #3ce5ab;
+    --secondary: #a04dcb;
+    --accent: #3cb1c8;
+
+    --blinking_cursor: var(--text);
 }
 
 * {
     margin: 0;
     padding: 0;
-    font: 26px monospace;
+    font: var(--font) monospace;
     cursor: default;
 }
 
@@ -48,8 +51,25 @@ p {
     padding: 0 4rem;
 }
 
-.primary {
-    color: var(--primary);
+p span {
+    color: var(--secondary);
+}
+
+p a {
+    color: var(--secondary);
+    text-decoration: none;
+    transition: 250ms linear;
+}
+
+p a:hover {
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+p a:active {
+    cursor: pointer;
+    text-decoration: underline;
+    filter: brightness(80%);
 }
 
 list {
@@ -60,15 +80,32 @@ input {
     all: unset;
     color: var(--text);
     caret-color: transparent;
+    width: 0;
+    margin-left: 0.5rem;
 }
 
-label:first-child  {
+#input_line {
+    margin-left: 4rem;
+    padding: 0;
+    display: flex;
+    align-items: center;
+}
+
+#input_line::after {
+    content: " ";
+    display: inline-block;
+    width: 12px;
+    height: 26px;
+    background: var(--blinking_cursor);
+    z-index: 10;
+}
+
+label  {
     color: var(--primary);
-    padding: 0 0 0 4rem;
     animation: none;
 }
 
-label {
+.blinking_pointer {
     color: var(--text);
     padding: 0;
     animation: blinking 400ms ease-in-out infinite;
