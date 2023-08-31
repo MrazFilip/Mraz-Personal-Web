@@ -14,11 +14,17 @@
     margin: 0;
     padding: 0;
     font: var(--font) monospace;
+    font-size: var(--font);
     cursor: default;
 }
 
 *:hover {
     cursor: default;
+}
+
+*::selection {
+    color: var(--secondary);
+    background: var(--accent);
 }
 
 body {
@@ -32,7 +38,6 @@ body {
     background-size: 100% 20px;
     box-shadow: inset 0 0 1.5rem 1.5rem black;
     overflow: hidden;
-    line-height: 24px;
     display: flex;
     align-content: center;
     justify-content: center;
@@ -97,7 +102,7 @@ input {
     width: 12px;
     height: 26px;
     background: var(--blinking_cursor);
-    z-index: 10;
+    z-index: 5;
 }
 
 label  {
@@ -122,6 +127,7 @@ h1 {
     animation: glowing 3s ease-in-out infinite;
     color: var(--text);
     margin: 0.5rem 0 0;
+    z-index: 100;
 }
 
 @keyframes glowing {

@@ -1,12 +1,14 @@
 const CV_FILENAME = "CV-MRAZ.pdf"
+const font = 26;
+const font_width = 14.2941;
+const input = document.getElementById('input');
+const list = document.getElementById("list");
 
-const font = 32;
-const height = window.screen.height * 0.80;
-const maxLines = (height / font) - 3;
-const lines = [];
-var speed = 25;
-
-var writing = false;
+let speed = 10;
+let writing = false;
+let height = document.getElementById('content').clientHeight;
+let maxLines = (height / (font + 5)) - 1; //-1 for the input field row
+let lines = [];
 
 /*
 Commands:
@@ -17,142 +19,155 @@ Commands:
 "links"
 "socials"
 */
+
 /*
 TODO:
-1. history of searching (up/down keys)
+1. fix text scrolling
+2. opening animation
 */
 
+function plainText(text) {
+    this.innerText = text;
+}
 
+function coloredText(text) {
+    this.innerText = text;
+}
+
+function pageLink(text, pageUrl) {
+    this.innerText = text;
+    this.pageUrl = pageUrl;
+}
+
+function downloadLink(text, downloadUrl) {
+    this.innerText = text;
+    this.downloadUrl = downloadUrl;
+}
 
 function getResult(text) {
     text = text.toLowerCase();
     const msg = [];
-    msg.push("C:\\MrazFilip > " + text);
+    msg.push([new plainText("C:\\MrazFilip > " + text)]);
     if(text === "help") {
-        msg.push("Here are all available commands:");
-        msg.push(["Help", "Help - Displays list of all available commands"]);
-        msg.push(["About", "About - Displays my personal information"]);
-        msg.push(["CV", "CV - Shows download options of my CV"]);
-        msg.push(["Links", "Links - Displays all of my work related links links"]);
-        msg.push(["Socials", "Socials - Displays all of my social media links"]);
+        msg.push([new plainText("Here are all available commands:")]);
+        msg.push([new coloredText("Help"), new plainText(" - Displays list of all available commands")]);
+        msg.push([new coloredText("About"), new plainText(" - Displays my personal information")]);
+        msg.push([new coloredText("CV"), new plainText(" - Shows download options of my CV")]);
+        msg.push([new coloredText("Links"), new plainText(" - Displays all of my work related links links")]);
+        msg.push([new coloredText("Socials"), new plainText(" - Displays all of my social media links")]);
     }
     else if(text === "about") {
-        msg.push("Here is some basic information about me:");
-        msg.push(["Name:", "Name: Filip Mráz"]);
-        msg.push(["Age:", "Age: 19"]);
-        msg.push(["Gender:", "Gender: M"]);
-        msg.push(["Nationality:", "Nationality: Czech"]);
-        msg.push(["Languages:", "Languages: Czech, English, German, Russian"]);
-        msg.push(["Programming languages:", "Programming languages: C#, Python, PHP, HTML, CSS, JS, SQL"]);
-        msg.push(["Education:", "Education: Private Secondary School of Information Technology"]);
+        msg.push([new plainText("Here is some basic information about me:")]);
+        msg.push([new coloredText("Name:"), new plainText(" Filip Mráz")]);
+        msg.push([new coloredText("Age:"), new plainText( " 19")]);
+        msg.push([new coloredText("Gender:"), new plainText(" M")]);
+        msg.push([new coloredText("Nationality:"), new plainText(" Czech")]);
+        msg.push([new coloredText("Languages:"), new plainText(" Czech, English, German, Russian")]);
+        msg.push([new coloredText("Programming languages:"), new plainText(" C#, Python, PHP, HTML, CSS, JS, SQL")]);
+        msg.push([new coloredText("Education:"), new plainText(" Private Secondary School of Information Technology")]);
     }
     else if(text === "cv") {
-        msg.push("Download my CV:")
-        msg.push(["Preview", "Preview", CV_FILENAME])
-        msg.push(["Download", "Download", CV_FILENAME])
+        msg.push([new plainText("Download my CV:")])
+        msg.push([new pageLink("Preview", CV_FILENAME)]);
+        msg.push([new downloadLink("Download", CV_FILENAME)]);
     }
     else if(text === "links") {
-        msg.push("Here are my work related links:");
-        msg.push(["GitHub", "GitHub - My GitHub profile", "https://github.com/MrazFilip"]);
-        msg.push(["LinkedIn", "LinkedIn - My LinkedIn profile", "https://www.linkedin.com/in/filip-mr%C3%A1z-0ab002229/"]);
+        msg.push([new plainText("Here are my work related links:")]);
+        msg.push([new pageLink("GitHub", "https://github.com/MrazFilip"), new plainText(" - My GitHub profile")]);
+        msg.push([new pageLink("LinkedIn", "https://www.linkedin.com/in/filip-mr%C3%A1z-0ab002229/"), new plainText(" - My LinkedIn profile")]);
     }
     else if(text === "socials") {
-        msg.push("Here are my social media links:");
-        msg.push(["Facebook", "Facebook - My Facebook profile", "https://www.facebook.com/filip.mraz.50/"]);
-        msg.push(["Instagram", "Facebook - My Instagram profile", "https://www.instagram.com/filip__mraz/"]);
+        msg.push([new plainText("Here are my social media links:")]);
+        msg.push([new pageLink("Facebook","https://www.facebook.com/filip.mraz.50/"), new plainText(" - My Facebook profile")]);
+        msg.push([new pageLink("Instagram", "https://www.instagram.com/filip__mraz/"), new plainText(" - My Instagram profile",)]);
     }
     else {
-        msg.push("'" + text + "'" + " is not recognized as one of the available commands");
-        msg.push("Try the 'help' command to list all available commands");
+        msg.push([new plainText("'" + text + "'" + " is not recognized as one of the available commands")]);
+        msg.push([new plainText("Try the 'help' command to list all available commands")]);
     }
-    msg.push("‎");
+    msg.push([new plainText("‎")]);
 
-    addElement(msg)
+    addElements(msg)
 }
 
-function addElement(text) {
-    for (let i = 0; i < text.length; i++) {
-        var p = document.createElement("p");
+function addElements(fullText) {
+    for (let i = 0; i < fullText.length; i++) {
+        let p = document.createElement("p");
+        list.appendChild(p);
         lines.push(p);
-        if(typeof text[i] !== "string") {
-            if(text[i].length > 2) {
-                var a = document.createElement("a");
-                if(text[i][2].includes(".pdf") && text[i][0] === "Download") {
-                    a.href = text[i][2];
-                    a.download = text[i][2];
-                }
-                else {
-                    a.href = text[i][2];
-                    a.target = "_"
-                }
-                lines[lines.lastIndexOf(p)].appendChild(a);
+
+        for (let j = 0; j < fullText[i].length; j++) {
+            if(fullText[i][j] instanceof coloredText) {
+                let span = document.createElement("span");
+                list.lastChild.appendChild(span);
             }
-            else {
-                var span = document.createElement("span");
-                lines[lines.lastIndexOf(p)].appendChild(span);
+            else if(fullText[i][j] instanceof pageLink) {
+                let a = document.createElement("a");
+                a.href = fullText[i][j].pageUrl;
+                a.target = "_";
+                list.lastChild.appendChild(a);
+            }
+            else if(fullText[i][j] instanceof downloadLink) {
+                let a = document.createElement("a");
+                a.href = fullText[i][j].downloadUrl;
+                a.download = fullText[i][j].downloadUrl;
+                list.lastChild.appendChild(a);
             }
         }
-        /*
-        while(lines.length > maxLines) {
-            lines.shift();
-            document.getElementById("list").firstChild.remove();
-        }*/
-        document.getElementById("list").appendChild(p);
     }
 
-    let j = 0;
-    let currentParagraph = lines.length - text.length;
+    while (lines.length >= maxLines) {
+        lines.shift();
+        list.firstChild.remove();
+    }
+
+    let currentChar = 0;
+    let currentElement = 0;
+    let currentParagraph = lines.length - fullText.length;
     let linesWritten = 0;
 
     const intervalId = setInterval(function () {
-        if(linesWritten === text.length) {
+        if(linesWritten === fullText.length) {
             writing = false;
             clearInterval(intervalId);
         }
-
-        if(typeof text[linesWritten] === "string") {
-            lines[currentParagraph].innerHTML += text[linesWritten][j];
-            j++;
+        else if(currentElement === fullText[linesWritten].length) {
+            currentElement = 0;
+            currentParagraph++;
+            linesWritten++;
         }
-        else if (j < text[linesWritten][0].length) {
-            lines[currentParagraph].firstChild.innerHTML += text[linesWritten][0][j]
-            j++;
-        }
-        else {
-            lines[currentParagraph].innerHTML += text[linesWritten][1][j];
-            j++;
+        else if(currentChar === fullText[linesWritten][currentElement].innerText.length) {
+            currentChar = 0;
+            currentElement++;
         }
 
-        if(typeof text[linesWritten] === "string") {
-            if (j === text[linesWritten].length) {
-                currentParagraph++;
-                linesWritten++;
-                j = 0;
-            }
+        if(fullText[linesWritten][currentElement] instanceof plainText) {
+            lines[currentParagraph].innerHTML += fullText[linesWritten][currentElement].innerText[currentChar];
+            currentChar++;
         }
-        else {
-            if(j === text[linesWritten][1].length) {
-                currentParagraph++;
-                linesWritten++;
-                j = 0;
-            }
+        else if(fullText[linesWritten][currentElement] instanceof coloredText) {
+            lines[currentParagraph].getElementsByTagName("span")[0].innerHTML += fullText[linesWritten][currentElement].innerText[currentChar];
+            currentChar++;
+        }
+        else if(fullText[linesWritten][currentElement] instanceof pageLink || fullText[linesWritten][currentElement] instanceof downloadLink) {
+            lines[currentParagraph].getElementsByTagName("a")[0].innerHTML += fullText[linesWritten][currentElement].innerText[currentChar];
+            currentChar++;
         }
     }, speed);
 
-    document.getElementById("input").value = '';
+    input.value = '';
 }
 
-/*
 window.addEventListener('resize', function () {
-    window.location.reload();
+    height = document.getElementById('content').clientHeight;
+    maxLines = (height / (font + 5)) - 1; //-1 for the input field row
 });
-*/
 
 document.addEventListener("keyup", function(event) {
     if (event.key === 'Enter' && writing === false) {
         writing = true;
-        getResult(document.getElementById("input").value);
-        document.getElementById('input').style.width = 0;
+        getResult(input.value);
+        input.style.width = 0;
         currentWidth = 0;
     }
 });
@@ -160,24 +175,31 @@ document.addEventListener("keyup", function(event) {
 window.onkeydown = inputFocus;
 
 function inputFocus(){
-    document.getElementById("input").focus();
+    input.focus();
 }
 
-var currentWidth = 0;
+let currentWidth = 0;
 
 document.addEventListener("keydown", function (event) {
-    if (event.keyCode >= 48 && event.keyCode <= 57 || event.keyCode >= 65 && event.keyCode <= 90 || event.keyCode === 32) {
-        currentWidth += 14.2941;
-        document.getElementById('input').style.width = currentWidth + "px";
+    if(input.value.length > (window.screen.width * 0.7) / font_width) {
+        input.value = input.value.slice(0, -1);
+        return
     }
-    else if(event.keyCode === 8 && document.getElementById('input').value.length > 0) {
-        currentWidth -= 14.2941;
-        document.getElementById('input').style.width = currentWidth + "px";
+    if (event.keyCode >= 48 && event.keyCode <= 57 || event.keyCode >= 65 && event.keyCode <= 90 || event.keyCode === 32) {
+        currentWidth += font_width;
+        input.style.width = currentWidth + "px";
+    }
+    else if(event.keyCode === 8 && input.value.length > 0) {
+        currentWidth -= font_width;
+        input.style.width = currentWidth + "px";
     }
 });
 
-var blink = false
-const blinkTimer = setInterval(function () {
+let blink = false
+blinkTimer = setInterval(function () {
+    currentWidth = input.value.length * font_width;
+    input.style.width = currentWidth;
+
     if(!blink) {
         document.getElementById('input_line').style.setProperty("--blinking_cursor", "transparent");
         blink = true;
@@ -187,8 +209,6 @@ const blinkTimer = setInterval(function () {
         blink = false;
     }
 }, 250);
-
-var input = document.getElementById('input');
 
 input.addEventListener('select', function () {
     this.selectionStart = this.selectionEnd;
