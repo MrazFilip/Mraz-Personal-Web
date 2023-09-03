@@ -6,7 +6,7 @@
     --primary: #3ce5ab;
     --secondary: #a04dcb;
     --accent: #3cb1c8;
-
+    --dark: #18191A ;
     --blinking_cursor: var(--text);
 }
 
@@ -30,18 +30,12 @@
 body {
     height: 100vh;
     width: 100vw;
-    background: linear-gradient(
-            to bottom,
-            var(--background_lines),
-            var(--background) 30%
-    );
-    background-size: 100% 20px;
-    box-shadow: inset 0 0 1.5rem 1.5rem black;
     overflow: hidden;
     display: flex;
     align-content: center;
     justify-content: center;
     flex-direction: column;
+    position: relative;
 }
 
 #content {
@@ -49,6 +43,96 @@ body {
     flex: 1;
     display: flex;
     flex-direction: column;
+    z-index: 100;
+}
+
+#background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 100vw;
+    background: linear-gradient(
+            to bottom,
+            var(--background_lines),
+            var(--background) 30%
+    );
+    background-size: 100% 20px;
+}
+
+#letters {
+    font-size: 18px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    color: var(--background);
+    mix-blend-mode: screen;
+    opacity: 0.5;
+    word-wrap: break-word;
+}
+
+
+#border {
+    pointer-events: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    width: 100vw;
+    height: 100vh;
+    box-shadow: inset 0 0 1.5rem 1.5rem var(--dark);
+}
+
+.loading {
+    pointer-events: none;
+    position: absolute;
+    height: 100vh;
+    width: 100vw;
+    top: 0;
+    left: 0;
+    background: var(--dark);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 100000;
+}
+
+.loading_hidden {
+    visibility: hidden;
+}
+
+.loading .dot:nth-child(2) {
+    animation: dots1 700ms infinite;
+}
+
+.loading .dot:nth-child(3) {
+    animation: dots2 700ms infinite;
+}
+
+.loading .dot:nth-child(4) {
+    animation: dots3 700ms infinite;
+}
+
+@keyframes dots1 {
+    0% { opacity: 0 }
+    25% { opacity: 1 }
+    100% { opacity: 1 }
+}
+
+@keyframes dots2 {
+    0% { opacity: 0 }
+    25% { opacity: 0 }
+    50% { opacity: 1 }
+    100% { opacity: 1 }
+}
+
+@keyframes dots3 {
+    0% { opacity: 0 }
+    50% { opacity: 0 }
+    75% { opacity: 1 }
+    100% { opacity: 1 }
 }
 
 p {
@@ -127,11 +211,11 @@ h1 {
     animation: glowing 3s ease-in-out infinite;
     color: var(--text);
     margin: 0.5rem 0 0;
-    z-index: 100;
+    z-index: 10000;
 }
-
+/*
 @keyframes glowing {
     0% {opacity: 0.8}
     50% {opacity: 1}
     100% {opacity: 0.8}
-}
+}*/
